@@ -18,6 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "memory_map.h"
+#include "boot_metadata.h"
+#include "image_validate.h"
+#include "jump.h"
+#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,12 +55,18 @@ WWDG_HandleTypeDef hwwdg;
 
 /* USER CODE END PV */
 
+
+//extern void read_metadata(void);
+//extern uint32_t calculate_crc(uint32_t, uint32_t);
+//extern int is_valid_app(uint32_t);
+//extern void jump_to_app(uint32_t);
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CRC_Init(void);
 static void MX_WWDG_Init(void);
+//static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -64,53 +75,66 @@ static void MX_WWDG_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
 /**
+ *
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
 {
+    /* Initialize HAL and clock ONCE */
+    HAL_Init();
+    SystemClock_Config();
 
-  /* USER CODE BEGIN 1 */
+    /* Initialize only minimal peripherals */
+    MX_GPIO_Init();
+    MX_USART2_UART_Init();
+    MX_CRC_Init();
+    // MX_IWDG_Init();   // enable later
 
-  /* USER CODE END 1 */
+    printf("\r\n--- BOOTLOADER START ---\r\n");
 
-  /* MCU Configuration--------------------------------------------------------*/
+    /* Read boot metadata from flash */
+    read_metadata();
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    uint32_t slot_addr;
 
-  /* USER CODE BEGIN Init */
+    /* Decide which slot to boot */
+    if (boot_meta.update_pending)
+    {
+        printf("Update pending\r\n");
 
-  /* USER CODE END Init */
+        slot_addr = (boot_meta.active_slot == 0) ?
+                     SLOT_B_START : SLOT_A_START;
 
-  /* Configure the system clock */
-  SystemClock_Config();
+        boot_meta.boot_attempts++;
+    }
+    else
+    {
+        slot_addr = (boot_meta.active_slot == 0) ?
+                     SLOT_A_START : SLOT_B_START;
+    }
 
-  /* USER CODE BEGIN SysInit */
+    /* Validate application image */
+    if (!is_valid_app(slot_addr))
+    {
+        printf("Invalid app, rolling back\r\n");
 
-  /* USER CODE END SysInit */
+        slot_addr = (boot_meta.last_good_slot == 0) ?
+                     SLOT_A_START : SLOT_B_START;
+    }
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART2_UART_Init();
-  MX_CRC_Init();
-  MX_WWDG_Init();
-  /* USER CODE BEGIN 2 */
+    printf("Jumping to application at 0x%08lX\r\n", slot_addr);
 
-  /* USER CODE END 2 */
+    HAL_Delay(100);   // allow UART buffer to flush
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+    /* Jump to application (never returns) */
+    jump_to_app(slot_addr);
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+    /* Safety loop – should never reach */
+    while (1);
 }
+
 
 /**
   * @brief System Clock Configuration
