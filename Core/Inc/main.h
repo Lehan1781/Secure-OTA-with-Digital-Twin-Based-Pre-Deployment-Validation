@@ -31,6 +31,7 @@ extern "C" {
 #include "boot_metadata.h"
 #include "memory_map.h"
 #include "bootloader.h"
+#include <stdint.h>  
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
