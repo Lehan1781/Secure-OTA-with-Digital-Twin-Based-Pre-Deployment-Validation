@@ -86,50 +86,47 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
-  .ARM.extab (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
-  {
-    . = ALIGN(4);
-    *(.ARM.extab* .gnu.linkonce.armextab.*)
-    . = ALIGN(4);
-  } >FLASH
+.ARM.extab :
+{
+  . = ALIGN(4);
+  *(.ARM.extab* .gnu.linkonce.armextab.*)
+  . = ALIGN(4);
+} >FLASH
 
-  .ARM (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
-  {
-    . = ALIGN(4);
-    __exidx_start = .;
-    *(.ARM.exidx*)
-    __exidx_end = .;
-    . = ALIGN(4);
-  } >FLASH
+.ARM.exidx :
+{
+  . = ALIGN(4);
+  __exidx_start = .;
+  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+  __exidx_end = .;
+  . = ALIGN(4);
+} >FLASH
 
-  .preinit_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
-  {
-    . = ALIGN(4);
-    PROVIDE_HIDDEN (__preinit_array_start = .);
-    KEEP (*(.preinit_array*))
-    PROVIDE_HIDDEN (__preinit_array_end = .);
-    . = ALIGN(4);
-  } >FLASH
 
-  .init_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
-  {
-    . = ALIGN(4);
-    PROVIDE_HIDDEN (__init_array_start = .);
-    KEEP (*(SORT(.init_array.*)))
-    KEEP (*(.init_array*))
-    PROVIDE_HIDDEN (__init_array_end = .);
-    . = ALIGN(4);
-  } >FLASH
+/* ----- GCC-10 compatible C runtime arrays ----- */
 
-  .fini_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
-  {
-    . = ALIGN(4);
-    PROVIDE_HIDDEN (__fini_array_start = .);
-    KEEP (*(SORT(.fini_array.*)))
-    KEEP (*(.fini_array*))
-    PROVIDE_HIDDEN (__fini_array_end = .);
-    . = ALIGN(4);
-  } >FLASH
+.preinit_array :
+{
+  . = ALIGN(4);
+  KEEP(*(.preinit_array*))
+  . = ALIGN(4);
+} >FLASH
+
+.init_array :
+{
+  . = ALIGN(4);
+  KEEP(*(SORT(.init_array.*)))
+  KEEP(*(.init_array*))
+  . = ALIGN(4);
+} >FLASH
+
+.fini_array :
+{
+  . = ALIGN(4);
+  KEEP(*(SORT(.fini_array.*)))
+  KEEP(*(.fini_array*))
+  . = ALIGN(4);
+} >FLASH
 
   /* Used by the startup to initialize data */
   _sidata = LOADADDR(.data);

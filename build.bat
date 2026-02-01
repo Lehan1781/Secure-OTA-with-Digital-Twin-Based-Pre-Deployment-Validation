@@ -5,10 +5,13 @@ echo ======================================
 echo STM32 OTA Bootloader Build
 echo ======================================
 
-if not exist %BUILD_DIR% (
-    mkdir %BUILD_DIR%
+REM --- CLEAN BUILD DIRECTORY EVERY TIME ---
+if exist %BUILD_DIR% (
+    echo Cleaning previous build...
+    rmdir /s /q %BUILD_DIR%
 )
 
+mkdir %BUILD_DIR%
 cd %BUILD_DIR%
 
 cmake -G "MinGW Makefiles" ..

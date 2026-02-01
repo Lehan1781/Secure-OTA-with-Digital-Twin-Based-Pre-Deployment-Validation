@@ -80,6 +80,8 @@ set(HAL_SOURCES
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
     Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_wwdg.c
 )
 
 # -------------------------------------------------
