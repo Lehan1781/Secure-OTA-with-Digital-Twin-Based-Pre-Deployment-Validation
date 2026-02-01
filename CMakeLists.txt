@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-# Tell CMake this is bare-metal, not Windows
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR cortex-m4)
 set(CMAKE_EXECUTABLE_SUFFIX "")
@@ -9,16 +8,13 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 project(bootloader C ASM)
 
 # -------------------------------------------------
-# Toolchain (explicit, no auto-detection)
+# Toolchain
 # -------------------------------------------------
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
 set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
 set(CMAKE_SIZE arm-none-eabi-size)
 
-# -------------------------------------------------
-# CPU / FPU flags (STM32F446RE – Cortex-M4F)
-# -------------------------------------------------
 set(MCU_FLAGS
     -mcpu=cortex-m4
     -mthumb
@@ -26,33 +22,11 @@ set(MCU_FLAGS
     -mfloat-abi=hard
 )
 
-# -------------------------------------------------
-# Compile options (C + ASM)
-# -------------------------------------------------
-
 add_compile_definitions(STM32F446xx)
-
-add_compile_options(
-    ${MCU_FLAGS}
-    -Wall
-    -Wextra
-    -Wno-unused-parameter
-    -O0
-    -g3
-)
+add_compile_options(${MCU_FLAGS} -Wall -Wextra -Wno-unused-parameter -O0 -g3)
 
 # -------------------------------------------------
-# Link options
-# -------------------------------------------------
-add_link_options(
-    ${MCU_FLAGS}
-    -T${CMAKE_SOURCE_DIR}/STM32F446RETX_FLASH.ld
-    -Wl,--gc-sections
-    -Wl,-Map=bootloader.map
-)
-
-# -------------------------------------------------
-# Source files (explicit)
+# Source files
 # -------------------------------------------------
 set(APP_SOURCES
     Core/Src/main.c
@@ -68,39 +42,13 @@ set(APP_SOURCES
     Core/Src/system_stm32f4xx.c
 )
 
-set(HAL_SOURCES
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
-    Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_wwdg.c
+file(GLOB HAL_SOURCES
+    "Drivers/STM32F4xx_HAL_Driver/Src/*.c"
 )
 
-# -------------------------------------------------
-# Startup file (ONLY ASM file)
-# -------------------------------------------------
-set(STARTUP_FILE
-    ${CMAKE_SOURCE_DIR}/Core/Startup/startup_stm32f446retx.s
-)
+set(STARTUP_FILE Core/Startup/startup_stm32f446retx.s)
+set_source_files_properties(${STARTUP_FILE} PROPERTIES COMPILE_FLAGS "-x assembler-with-cpp")
 
-# Tell CMake how to compile this ASM file
-set_source_files_properties(
-    ${STARTUP_FILE}
-    PROPERTIES
-    COMPILE_FLAGS "-x assembler-with-cpp"
-)
-
-# -------------------------------------------------
-# Include directories
-# -------------------------------------------------
 include_directories(
     Core/Inc
     Drivers/STM32F4xx_HAL_Driver/Inc
@@ -109,19 +57,23 @@ include_directories(
 )
 
 # -------------------------------------------------
-# Executable
+# Function to add firmware target with specific linker script
 # -------------------------------------------------
-add_executable(bootloader.elf
-    ${APP_SOURCES}
-    ${HAL_SOURCES}
-    ${STARTUP_FILE}
-)
+function(add_firmware TARGET_NAME LINKER_SCRIPT)
+    add_executable(${TARGET_NAME}.elf ${APP_SOURCES} ${HAL_SOURCES} ${STARTUP_FILE})
+    target_compile_options(${TARGET_NAME}.elf PRIVATE ${MCU_FLAGS})
+    target_link_options(${TARGET_NAME}.elf PRIVATE ${MCU_FLAGS} -T${LINKER_SCRIPT} -Wl,--gc-sections -Wl,-Map=${TARGET_NAME}.map)
+    
+    add_custom_command(TARGET ${TARGET_NAME}.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O ihex ${TARGET_NAME}.elf ${TARGET_NAME}.hex
+        COMMAND ${CMAKE_OBJCOPY} -O binary ${TARGET_NAME}.elf ${TARGET_NAME}.bin
+        COMMAND ${CMAKE_SIZE} ${TARGET_NAME}.elf
+    )
+endfunction()
 
 # -------------------------------------------------
-# Post-build outputs
+# Add three targets: bootloader, slot A, slot B
 # -------------------------------------------------
-add_custom_command(TARGET bootloader.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex bootloader.elf bootloader.hex
-    COMMAND ${CMAKE_OBJCOPY} -O binary bootloader.elf bootloader.bin
-    COMMAND ${CMAKE_SIZE} bootloader.elf
-)
+add_firmware(bootloader ${CMAKE_SOURCE_DIR}/LinkerScripts/LinkerScript_bootloader.ld)
+add_firmware(app_slotA  ${CMAKE_SOURCE_DIR}/LinkerScripts/LinkerScript_app_slotA.ld)
+add_firmware(app_slotB  ${CMAKE_SOURCE_DIR}/LinkerScripts/LinkerScript_app_slotB.ld)
