@@ -1,0 +1,3 @@
+D:/OTA_Major_project/build/CMakeFiles/firmware.elf.dir
+D:/OTA_Major_project/build/CMakeFiles/edit_cache.dir
+D:/OTA_Major_project/build/CMakeFiles/rebuild_cache.dir
