@@ -1,7 +1,4 @@
 @echo off
-echo ==========================
-echo Building STM32 Firmware
-echo ==========================
 
 if not exist build (
     mkdir build
@@ -10,14 +7,13 @@ if not exist build (
 cd build
 
 cmake -G "MinGW Makefiles" ^
--DCMAKE_TOOLCHAIN_FILE=../toolchain-arm-none-eabi.cmake ^
-..
+ -DCMAKE_TOOLCHAIN_FILE=../toolchain-arm-none-eabi.cmake^
+ ..
 
-mingw32-make
-
-cd ..
+cmake --build . -- -j
 
 echo ==========================
-echo Build Complete
+echo BUILD COMPLETE WOOHOOO
 echo ==========================
+
 pause
