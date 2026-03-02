@@ -72,6 +72,9 @@ void Error_Handler(void);
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 
+
+void SystemClock_Config(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

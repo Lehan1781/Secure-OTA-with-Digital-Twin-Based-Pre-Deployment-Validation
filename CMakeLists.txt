@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(firmware C ASM)
+project(OTA_Project C ASM)
 
 set(CMAKE_C_STANDARD 11)
 
@@ -9,95 +9,74 @@ add_compile_definitions(
     USE_HAL_DRIVER
 )
 
-# ===============================
-# INCLUDE DIRECTORIES
-# ===============================
-
-include_directories(
-    Core/Inc
-    Drivers/CMSIS/Include
-    Drivers/CMSIS/Device/ST/STM32F4xx/Include
-    Drivers/STM32F4xx_HAL_Driver/Inc
-)
-
-# ===============================
-# SOURCE FILES
-# ===============================
-
-file(GLOB_RECURSE CORE_SOURCES Core/Src/*.c)
-file(GLOB_RECURSE HAL_SOURCES Drivers/STM32F4xx_HAL_Driver/Src/*.c)
-
-set(SOURCES
-    ${CORE_SOURCES}
-    ${HAL_SOURCES}
-    D:/OTA_Major_project/Core/Startup/startup_stm32f446retx.s
-)
-
-# ===============================
-# CREATE EXECUTABLE FIRST
-# ===============================
-
-add_executable(firmware.elf ${SOURCES})
-
-# ===============================
-# >>> PASTE THE NEW FLAG SECTION HERE <<<
-# ===============================
-
 set(MCU_FLAGS
     -mcpu=cortex-m4
     -mthumb
     -mfpu=fpv4-sp-d16
     -mfloat-abi=hard
-)
-
-target_compile_options(firmware.elf PRIVATE
-    ${MCU_FLAGS}
-     -mcpu=cortex-m4
-    -mthumb
-    -mfpu=fpv4-sp-d16
-    -mfloat-abi=hard
-    -std=gnu11
-    -Wall
-    -O0
     -ffunction-sections
     -fdata-sections
-    -fno-exceptions
-    -fno-unwind-tables
-    -fno-asynchronous-unwind-tables
+)
+
+set(COMMON_INCLUDES
+    ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Inc
+    ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Include
+    ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+)
+
+file(GLOB HAL_SOURCES
+    ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/*.c
+)
+
+# =========================
+# BOOTLOADER
+# =========================
+
+add_executable(bootloader.elf
+    Bootloader/startup_stm32f446retx.s
+    Bootloader/boot_main.c
+    Bootloader/system_stm32f4xx.c
+    ${HAL_SOURCES}
 )
 
 
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F446RETX_FLASH.ld)
+target_include_directories(bootloader.elf PRIVATE
+    ${COMMON_INCLUDES}
+    bootloader
+)
 
-set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/STM32F446RETX_FLASH.ld")
+target_compile_options(bootloader.elf PRIVATE ${MCU_FLAGS})
 
-target_link_options(firmware.elf PRIVATE
-    -mcpu=cortex-m4
-    -mthumb
-    -mfpu=fpv4-sp-d16
-    -mfloat-abi=hard
-    -T "${LINKER_SCRIPT}"
+target_link_options(bootloader.elf PRIVATE
+    ${MCU_FLAGS}
+    -T ${CMAKE_SOURCE_DIR}/bootloader/BOOT.ld
     -Wl,--gc-sections
-    -Wl,-Map=firmware.map
     --specs=nano.specs
     --specs=nosys.specs
 )
 
+# =========================
+# APP
+# =========================
 
-target_link_libraries(firmware.elf PRIVATE
+add_executable(app.elf
+    app/startup_stm32f446retx.s
+    app/app_main.c
+    app/system_stm32f4xx.c
+    ${HAL_SOURCES}
+)
+
+target_include_directories(app.elf PRIVATE
+    ${COMMON_INCLUDES}
+    app
+)
+
+target_compile_options(app.elf PRIVATE ${MCU_FLAGS})
+
+target_link_options(app.elf PRIVATE
+    ${MCU_FLAGS}
+    -T ${CMAKE_SOURCE_DIR}/app/APP.ld
     -Wl,--gc-sections
-    -Wl,-Map=firmware.map
-)
-
-
-# ===============================
-# POST BUILD
-# ===============================
-
-add_custom_command(TARGET firmware.elf POST_BUILD
-    COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
-)
-
-add_custom_command(TARGET firmware.elf POST_BUILD
-    COMMAND arm-none-eabi-size firmware.elf
+    --specs=nano.specs
+    --specs=nosys.specs
 )
