@@ -1,25 +1,38 @@
 @echo off
+setlocal
 
-set PROJECT_DIR=%~dp0
-set ELF_FILE=%PROJECT_DIR%build\bootloader.elf
+echo Select target to flash:
+echo 1. Bootloader
+echo 2. App Slot A
+echo 3. App Slot B
+set /p TARGET_CHOICE=Enter choice (1/2/3): 
 
-REM Convert to forward slashes for OpenOCD
-set ELF_FILE=%ELF_FILE:\=/%
+if "%TARGET_CHOICE%"=="1" (
+    set FILE=build/bootloader.bin
+    set ADDR=0x08000000
+)
+
+if "%TARGET_CHOICE%"=="2" (
+    set FILE=build/app_slotA.bin
+    set ADDR=0x08008000
+)
+
+if "%TARGET_CHOICE%"=="3" (
+    set FILE=build/app_slotB.bin
+    set ADDR=0x08040000
+)
 
 echo ======================================
-echo Flashing STM32 Bootloader
+echo Flashing %FILE% at %ADDR%
 echo ======================================
 
-if not exist "%PROJECT_DIR%build\bootloader.elf" (
-    echo ERROR: ELF file not found.
-    echo Please run build.bat first.
+if not exist %FILE% (
+    echo ERROR: File not found.
+    echo Build the project first.
     exit /b 1
 )
 
-openocd ^
--f interface/stlink.cfg ^
--f target/stm32f4x.cfg ^
--c "program %ELF_FILE% verify reset exit"
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program %FILE% %ADDR% verify reset exit"
 
 if errorlevel 1 goto error
 

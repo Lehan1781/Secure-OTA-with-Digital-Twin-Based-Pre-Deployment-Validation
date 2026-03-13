@@ -1,0 +1,13 @@
+# Ignore CMake build directory
+build/
+
+# Ignore other build artifacts
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
