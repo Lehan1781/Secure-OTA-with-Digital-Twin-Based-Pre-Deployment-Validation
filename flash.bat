@@ -1,12 +1,16 @@
 @echo off
 
-set ELF_FILE=build\bootloader.elf
+set PROJECT_DIR=%~dp0
+set ELF_FILE=%PROJECT_DIR%build\bootloader.elf
+
+REM Convert to forward slashes for OpenOCD
+set ELF_FILE=%ELF_FILE:\=/%
 
 echo ======================================
 echo Flashing STM32 Bootloader
 echo ======================================
 
-if not exist %ELF_FILE% (
+if not exist "%PROJECT_DIR%build\bootloader.elf" (
     echo ERROR: ELF file not found.
     echo Please run build.bat first.
     exit /b 1

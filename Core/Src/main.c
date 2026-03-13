@@ -65,7 +65,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CRC_Init(void);
-static void MX_WWDG_Init(void);
+//static void MX_WWDG_Init(void);
 //static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
