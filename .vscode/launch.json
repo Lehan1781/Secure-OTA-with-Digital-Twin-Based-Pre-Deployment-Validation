@@ -1,0 +1,81 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Debug Bootloader",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "executable": "build/bootloader.elf",
+
+            "device": "STM32F446RE",
+            "interface": "swd",
+
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+
+            "runToEntryPoint": "main",
+
+            "postLaunchCommands": [
+                "add-symbol-file build/app_slotA.elf 0x08008000",
+                "add-symbol-file build/app_slotB.elf 0x08040000"
+            ]
+        },
+
+        {
+            "name": "Debug App Slot A",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "executable": "build/app_slotA.elf",
+
+            "device": "STM32F446RE",
+            "interface": "swd",
+
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+
+            "runToEntryPoint": "main",
+
+            "postLaunchCommands": [
+                "monitor reset halt",
+                "monitor mww 0xE000ED08 0x08008000"
+            ]
+        },
+
+        {
+            "name": "Debug App Slot B",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "executable": "build/app_slotB.elf",
+
+            "device": "STM32F446RE",
+            "interface": "swd",
+
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+
+            "runToEntryPoint": "main",
+
+            "postLaunchCommands": [
+                "monitor reset halt",
+                "monitor mww 0xE000ED08 0x08040000"
+            ]
+        }
+
+    ]
+}

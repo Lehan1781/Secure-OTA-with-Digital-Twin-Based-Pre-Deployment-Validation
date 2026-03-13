@@ -1,3 +1,5 @@
 D:/OTA_Major_project/build/CMakeFiles/bootloader.elf.dir
+D:/OTA_Major_project/build/CMakeFiles/app_slotA.elf.dir
+D:/OTA_Major_project/build/CMakeFiles/app_slotB.elf.dir
 D:/OTA_Major_project/build/CMakeFiles/edit_cache.dir
 D:/OTA_Major_project/build/CMakeFiles/rebuild_cache.dir

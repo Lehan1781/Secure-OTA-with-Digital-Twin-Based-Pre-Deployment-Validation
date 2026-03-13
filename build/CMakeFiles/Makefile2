@@ -63,10 +63,14 @@ CMAKE_BINARY_DIR = D:\OTA_Major_project\build
 
 # The main recursive "all" target.
 all: CMakeFiles/bootloader.elf.dir/all
+all: CMakeFiles/app_slotA.elf.dir/all
+all: CMakeFiles/app_slotB.elf.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
 codegen: CMakeFiles/bootloader.elf.dir/codegen
+codegen: CMakeFiles/app_slotA.elf.dir/codegen
+codegen: CMakeFiles/app_slotB.elf.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -75,6 +79,8 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/bootloader.elf.dir/clean
+clean: CMakeFiles/app_slotA.elf.dir/clean
+clean: CMakeFiles/app_slotB.elf.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -84,7 +90,7 @@ clean: CMakeFiles/bootloader.elf.dir/clean
 CMakeFiles/bootloader.elf.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\bootloader.elf.dir\build.make CMakeFiles/bootloader.elf.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\bootloader.elf.dir\build.make CMakeFiles/bootloader.elf.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29 "Built target bootloader.elf"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87 "Built target bootloader.elf"
 .PHONY : CMakeFiles/bootloader.elf.dir/all
 
 # Build rule for subdir invocation for target.
@@ -101,13 +107,77 @@ bootloader.elf: CMakeFiles/bootloader.elf.dir/rule
 # codegen rule for target.
 CMakeFiles/bootloader.elf.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\bootloader.elf.dir\build.make CMakeFiles/bootloader.elf.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29 "Finished codegen for target bootloader.elf"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87 "Finished codegen for target bootloader.elf"
 .PHONY : CMakeFiles/bootloader.elf.dir/codegen
 
 # clean rule for target.
 CMakeFiles/bootloader.elf.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\bootloader.elf.dir\build.make CMakeFiles/bootloader.elf.dir/clean
 .PHONY : CMakeFiles/bootloader.elf.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/app_slotA.elf.dir
+
+# All Build rule for target.
+CMakeFiles/app_slotA.elf.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotA.elf.dir\build.make CMakeFiles/app_slotA.elf.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotA.elf.dir\build.make CMakeFiles/app_slotA.elf.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29 "Built target app_slotA.elf"
+.PHONY : CMakeFiles/app_slotA.elf.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/app_slotA.elf.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\OTA_Major_project\build\CMakeFiles 29
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/app_slotA.elf.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\OTA_Major_project\build\CMakeFiles 0
+.PHONY : CMakeFiles/app_slotA.elf.dir/rule
+
+# Convenience name for target.
+app_slotA.elf: CMakeFiles/app_slotA.elf.dir/rule
+.PHONY : app_slotA.elf
+
+# codegen rule for target.
+CMakeFiles/app_slotA.elf.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotA.elf.dir\build.make CMakeFiles/app_slotA.elf.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29 "Finished codegen for target app_slotA.elf"
+.PHONY : CMakeFiles/app_slotA.elf.dir/codegen
+
+# clean rule for target.
+CMakeFiles/app_slotA.elf.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotA.elf.dir\build.make CMakeFiles/app_slotA.elf.dir/clean
+.PHONY : CMakeFiles/app_slotA.elf.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/app_slotB.elf.dir
+
+# All Build rule for target.
+CMakeFiles/app_slotB.elf.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotB.elf.dir\build.make CMakeFiles/app_slotB.elf.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotB.elf.dir\build.make CMakeFiles/app_slotB.elf.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58 "Built target app_slotB.elf"
+.PHONY : CMakeFiles/app_slotB.elf.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/app_slotB.elf.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\OTA_Major_project\build\CMakeFiles 29
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/app_slotB.elf.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\OTA_Major_project\build\CMakeFiles 0
+.PHONY : CMakeFiles/app_slotB.elf.dir/rule
+
+# Convenience name for target.
+app_slotB.elf: CMakeFiles/app_slotB.elf.dir/rule
+.PHONY : app_slotB.elf
+
+# codegen rule for target.
+CMakeFiles/app_slotB.elf.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotB.elf.dir\build.make CMakeFiles/app_slotB.elf.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\OTA_Major_project\build\CMakeFiles --progress-num=30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58 "Finished codegen for target app_slotB.elf"
+.PHONY : CMakeFiles/app_slotB.elf.dir/codegen
+
+# clean rule for target.
+CMakeFiles/app_slotB.elf.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\app_slotB.elf.dir\build.make CMakeFiles/app_slotB.elf.dir/clean
+.PHONY : CMakeFiles/app_slotB.elf.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
